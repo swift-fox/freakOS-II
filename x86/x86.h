@@ -6,10 +6,14 @@
 
 #include "apic.h"
 
-/* System registers */
+/* Control registers */
 struct cr0 {
 	uint16_t pe : 1, mp : 1, em : 1, ts : 1, et : 1, ne : 1, reserved0 : 10;
 	uint16_t wp : 1, reserved1 : 1, am : 1, reserved2 : 10, nw : 1, cd : 1, pg : 1;
+} __attribute__((packed, aligned(4)));
+
+struct cr3 {
+	uint32_t _2 : 3, pwt : 1, pcd : 1, _5 : 7, page_dir_addr : 20;
 } __attribute__((packed, aligned(4)));
 
 struct cr4 {
@@ -97,24 +101,60 @@ struct interrupt_frame
 	uint32_t ss;
 };
 
-/* Platform-specific functions */
+/* Platform init functions */
 void terminal_init();
 void setup_idt();
 void fpu_init();
 void ioapic_init();
 void lapic_init();
 void kbc_init();
+void paging_init();
 
+/* Interrupt-related routines */
 void register_intr_handler(uint8_t nr, void * handler);
 void ioapic_irq_setup(uint8_t irq_nr, uint8_t pin_nr);
 
 #define DEFINE_INTR_HANDLER(name, code)	\
 void name(struct interrupt_frame * frame) __attribute__((interrupt)) code
 
+#define DEFINE_INTR_HANDLER_ERRCODE(name, code)	\
+void name(struct interrupt_frame * frame, uint32_t error_code) __attribute__((interrupt)) code
+
 #define DEFINE_IRQ_HANDLER(name, code)	\
 void name(struct interrupt_frame * frame) __attribute__((interrupt)) {	\
 code\
 	lapic_write_reg(LAPIC_EOI, 0);\
+}
+
+/* Read and write control registers */
+static inline struct cr0 read_cr0() {
+	struct cr0 t;
+	asm volatile("movl %%cr0, %0" : "=r" (t));
+	return t;
+}
+
+static inline void write_cr0(struct cr0 t) {
+	asm volatile("movl %0, %%cr0" : : "r" (t));
+}
+
+static inline struct cr3 read_cr3() {
+	struct cr3 t;
+	asm volatile("movl %%cr3, %0" : "=r" (t));
+	return t;
+}
+
+static inline void write_cr3(struct cr3 t) {
+	asm volatile("movl %0, %%cr3" : : "r" (t));
+}
+
+static inline struct cr4 read_cr4() {
+	struct cr4 t;
+	asm volatile("movl %%cr4, %0" : "=r" (t));
+	return t;
+}
+
+static inline void write_cr4(struct cr4 t) {
+	asm volatile("movl %0, %%cr4" : : "r" (t));
 }
 
 #endif

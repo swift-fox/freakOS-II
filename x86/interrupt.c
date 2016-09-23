@@ -48,8 +48,7 @@ void setup_idt() {
 	for (i = 0; i < NR_INTR; i++)
 		idt[i] = make_intr_gate((uint32_t)default_intr_handler, 0x10, 0, 1);
 
-	asm volatile("lidt %0\n"
-		"sti"
+	asm volatile("lidt %0"
 		:
 		: "m" (idtr.limit)
 	);

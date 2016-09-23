@@ -24,16 +24,14 @@ void register_irq(unsigned int irq_nr, void * handler) {
 	apic_register_intr_handler(irq_nr, handler);
 }
 */
-void kernel_init();
 
-void main() {
+void arch_init() {
 	/* Setup FPU as early as possible, because clang generates code that uses FPU. */
 	fpu_init();
 
 	terminal_init();
 	interrupt_init();
+	paging_init();
 
 	kbc_init();
-
-	kernel_init();
 }
