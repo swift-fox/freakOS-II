@@ -1,10 +1,7 @@
-void arch_init();
 void printk(char * msg, ...);
 
-void main()
+void start_kernel()
 {
-	arch_init();
-
 	printk("Kernel initialized.\n");
 
 //	for(;;)

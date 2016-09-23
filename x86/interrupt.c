@@ -10,7 +10,7 @@ static inline struct gate_desc make_intr_gate(uint32_t addr, uint16_t seg, uint8
 		.offset0 = addr,
 		.offset1 = addr >> 16,
 		.seg = seg,
-		.reserved = 0,
+		._ = 0,
 		.type = INTR_GATE,
 		.s = 0,
 		.dpl = dpl,

@@ -28,7 +28,7 @@ static const size_t vga_height = 25;
 static const size_t tab_size = 8;
 static const uint8_t default_color = make_color(COLOR_LIGHT_GREY, COLOR_BLACK);
 
-static uint16_t* terminal_buffer = (uint16_t*) 0xB8000;
+static uint16_t* terminal_buffer = (uint16_t*) 0xb8000;
 static size_t row, col;
 
 void (*kputc)(char c);

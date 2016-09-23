@@ -83,9 +83,9 @@ struct lvt {
 // IOAPIC IO redirection table
 struct redtbl {
 	uint16_t vector : 8, delivery_mode : 3, dest_mode : 1, status : 1, polarity : 1, remote_irr : 1, trigger_mode : 1;
-	uint16_t masked : 1, reserved0 : 15;
-	uint16_t reserved1;
-	uint16_t reserved2 : 8, dest : 8;
+	uint16_t masked : 1, _17 : 15;
+	uint16_t _32;
+	uint16_t _48 : 8, dest : 8;
 } __attribute__((packed));
 
 #endif

@@ -28,8 +28,12 @@ stack_top:
 .global _start
 .type _start, @function
 _start:
+	// Save multiboot boot info address
+	mov %eax, multiboot_info_magic
+	mov %ebx, multiboot_info_addr
+
 	mov $stack_top, %esp
-	call main
+	call arch_init
 1:	hlt
 	jmp 1b
 

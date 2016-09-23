@@ -8,12 +8,12 @@
 
 /* Control registers */
 struct cr0 {
-	uint16_t pe : 1, mp : 1, em : 1, ts : 1, et : 1, ne : 1, reserved0 : 10;
-	uint16_t wp : 1, reserved1 : 1, am : 1, reserved2 : 10, nw : 1, cd : 1, pg : 1;
+	uint16_t pe : 1, mp : 1, em : 1, ts : 1, et : 1, ne : 1, _6 : 10;
+	uint16_t wp : 1, _17 : 1, am : 1, _19 : 10, nw : 1, cd : 1, pg : 1;
 } __attribute__((packed, aligned(4)));
 
 struct cr3 {
-	uint32_t _2 : 3, pwt : 1, pcd : 1, _5 : 7, page_dir_addr : 20;
+	uint32_t _0 : 3, pwt : 1, pcd : 1, _5 : 7, page_dir_addr : 20;
 } __attribute__((packed, aligned(4)));
 
 struct cr4 {
@@ -38,7 +38,7 @@ struct gate_desc {
 
 	union {
 		uint8_t base1;
-		uint8_t reserved;
+		uint8_t _;
 	};
 
 	uint8_t type : 4, s : 1, dpl : 2, p : 1;
@@ -135,6 +135,16 @@ static inline struct cr0 read_cr0() {
 
 static inline void write_cr0(struct cr0 t) {
 	asm volatile("movl %0, %%cr0" : : "r" (t));
+}
+
+static inline uint32_t read_cr2() {
+	uint32_t t;
+	asm volatile("movl %%cr2, %0" : "=r" (t));
+	return t;
+}
+
+static inline void write_cr2(uint32_t t) {
+	asm volatile("movl %0, %%cr2" : : "r" (t));
 }
 
 static inline struct cr3 read_cr3() {
